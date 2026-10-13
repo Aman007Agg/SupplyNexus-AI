@@ -15,6 +15,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(options => options.SwaggerEndpoint("/openapi/v1.json", "SupplyNexus API v1"));
 }
 
+// Health endpoint: confirms that the API process is responding.
+app.MapGet("/api/health", () => Results.Ok(new
+{
+    status = "Healthy",
+    service = "SupplyNexus.Api"
+})).WithName("GetHealth").WithTags("Health");
+
 app.UseAuthorization();
 
 app.MapControllers();
