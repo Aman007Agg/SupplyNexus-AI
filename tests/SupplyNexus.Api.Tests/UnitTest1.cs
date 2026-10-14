@@ -1,10 +1,28 @@
-﻿namespace SupplyNexus.Api.Tests;
+﻿
+using Microsoft.AspNetCore.Mvc.Testing;
 
-public class UnitTest1
+namespace SupplyNexus.Api.Tests;
+
+public sealed class HealthEndpointTests
+    : IClassFixture<WebApplicationFactory<Program>>
 {
-    [Fact]
-    public void Test1()
-    {
+    private readonly HttpClient _client;
 
+    public HealthEndpointTests(WebApplicationFactory<Program> factory)
+    {
+        _client = factory.CreateClient();
+    }
+
+    [Fact]
+    public async Task GetHealth_ReturnsHealthyResponse()
+    {
+        var response = await _client.GetAsync("/api/health");
+
+        response.EnsureSuccessStatusCode();
+
+        var body = await response.Content.ReadAsStringAsync();
+
+        Assert.Contains("Healthy", body);
+        Assert.Contains("SupplyNexus.Api", body);
     }
 }
