@@ -1,0 +1,22 @@
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg17
+    container_name: supplynexus-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: supplynexus
+      POSTGRES_USER: supplynexus_app
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in your environment}
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - supplynexus_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U supplynexus_app -d supplynexus"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  supplynexus_postgres_data:
